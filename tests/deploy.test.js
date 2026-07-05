@@ -20,15 +20,17 @@ test("keeps app shell assets base-path aware", () => {
   );
 });
 
-test("deploys the static build through GitHub Pages Actions", () => {
+test("publishes the static build to a gh-pages branch", () => {
   assert.match(deployWorkflow, /branches:\s*\n\s*-\s*main/);
-  assert.match(deployWorkflow, /actions\/configure-pages@v\d+/);
+  assert.match(deployWorkflow, /contents:\s*write/);
   assert.match(deployWorkflow, /npm ci/);
   assert.match(deployWorkflow, /npm run check/);
   assert.match(deployWorkflow, /npm run build/);
-  assert.match(deployWorkflow, /actions\/upload-pages-artifact@v\d+/);
-  assert.match(deployWorkflow, /path:\s*build/);
-  assert.match(deployWorkflow, /actions\/deploy-pages@v\d+/);
+  assert.match(deployWorkflow, /cp -R build\/\. "\$DEPLOY_DIR\/"/);
+  assert.match(deployWorkflow, /touch "\$DEPLOY_DIR\/\.nojekyll"/);
+  assert.match(deployWorkflow, /push --force origin gh-pages/);
+  assert.doesNotMatch(deployWorkflow, /actions\/deploy-pages/);
+  assert.doesNotMatch(deployWorkflow, /actions\/upload-pages-artifact/);
 });
 
 test("does not ship a stale custom domain", () => {

@@ -19,4 +19,4 @@ npm run build
 
 ## Deployment
 
-Pushes to `main` deploy the static `build/` output to GitHub Pages through `.github/workflows/deploy.yml`.
+Pushes to `main` build the site and publish the static `build/` output to the `gh-pages` branch through `.github/workflows/deploy.yml`.
